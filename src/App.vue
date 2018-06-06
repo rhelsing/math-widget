@@ -18,6 +18,7 @@ export default {
 <style>
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-size: 2rem;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #ffe;
@@ -25,5 +26,6 @@ export default {
 body{
   background: #002b36;
   height: 100%;
+  margin:0;
 }
 </style>

@@ -5,6 +5,7 @@
     </div>
     <div id="results">
     </div>
+    <div id="col3"></div>
   </div>
 </template>
 
@@ -37,28 +38,28 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+.container, html, body {
+    height: 100%;
+    margin: 0;
+}
 .container {
-  height:100%;
-    display:flex;
-    display: -webkit-flex;
-    flex-direction: row;
-    -webkit-flex-direction: row;
-    -webkit-align-content: stretch;
-    align-content: stretch;
+    display: flex;
 }
-.container > * {
-  flex: 1;
-  height: 100%;
+.container > *{
+  padding: 1rem;
 }
-#calc{
-  margin: 1rem;
-  outline: none;
-  margin: auto;
+
+#calc {
+    flex: 100%;
+    outline: none;
 }
 #results {
-  background: #0000001a;
-  margin: auto;
-  color: #3ff3ba;
-  height: 100%;
+    flex: 100%;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    background: #0000001a;
+    color: #3ff3ba
 }
 </style>
