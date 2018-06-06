@@ -5,7 +5,7 @@
     </div>
     <div id="results">
     </div>
-    <div id="col3"></div>
+
   </div>
 </template>
 
@@ -16,6 +16,9 @@ export default {
   props: {
     msg: String,
     varLookups: {}
+  },
+  mounted: function(){
+    this.evaluate()
   },
   methods: {
     evaluate: function(){
@@ -46,15 +49,16 @@ export default {
 .container {
     display: flex;
 }
-.container > *{
-  padding: 1rem;
-}
 
 #calc {
     flex: 100%;
     outline: none;
+    padding-left: 2rem;
+    padding-right: 2rem;
 }
 #results {
+    padding-left: 2rem;
+    padding-right: 2rem;
     flex: 100%;
     height: 100%;
     position: absolute;
