@@ -8,6 +8,8 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "highlightjs": "^9.10.0",
+    "mathjs": "^4.4.2",
     "vue": "^2.5.16"
   },
   "devDependencies": {
