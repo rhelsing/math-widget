@@ -24,14 +24,36 @@ export default {
     evaluate: function(){
       const raw = document.getElementById('calc').innerText
       let lines = raw.split('\n').map(x => x.trim() ).filter(x => x.length > 0 )
-      lines = this.rawEval(lines)
-      document.getElementById('results').innerText = lines.join('\n')
+      let result = this.rawEval(lines)
+      document.getElementById('results').innerText = result[0].join('\n')
+      // const hlLines = this.highlight(lines, result[1])
+      // document.getElementById('calc').innerText = hlLines.join('\n')
     },
     rawEval: function(lines){
       let result = []
       let scope = {}
       lines.forEach(function(e){
         result.push( math.eval(e, scope) )
+      });
+      return [result, scope]
+    },
+    highlight: function(lines, scope){
+      const keys = Object.keys(scope)
+      //look for
+      const result = lines.map(function(line){
+        //check if any keys are in line
+        let tLine = line
+        keys.forEach(function(elm){
+          //if indexOf != -1, wrap it +length in span color
+          if (tLine.indexOf(elm) != -1){
+            let i = tLine.indexOf(elm)
+            let len = elm.lenth
+            //replace
+            tLine = tLine.substring(i, i+len)
+            // tLine = tLine.substring(0, i-1)+tLine.substring(i, i+len)+tLine.substring(i+1+len,-1);
+          }
+        });
+        return tLine
       });
       return result
     }
