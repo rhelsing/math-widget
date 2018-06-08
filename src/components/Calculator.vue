@@ -11,23 +11,66 @@
 
 <script>
 import math from 'mathjs'
+
+function rawEval(lines){
+  let result = []
+  let scope = {}
+  lines.forEach(function(e){
+    result.push( math.eval(e, scope) )
+  });
+  return [result, scope]
+}
+
 export default {
   name: 'Calculator',
   props: {
-    msg: String,
-    varLookups: {}
+    msg: String
   },
   mounted: function(){
     this.evaluate()
+    setInterval(this.evaluate(), 2000);
   },
   methods: {
     evaluate: function(){
       const raw = document.getElementById('calc').innerText
       let lines = raw.split('\n').map(x => x.trim() ).filter(x => x.length > 0 )
-      let result = this.rawEval(lines)
-      document.getElementById('results').innerText = result[0].join('\n')
-      // const hlLines = this.highlight(lines, result[1])
-      // document.getElementById('calc').innerText = hlLines.join('\n')
+      //build up live stock quotes: https://api.iextrading.com/1.0/stock/aapl/price
+      let processedQuotes = this.processQuotes(lines).then(function(data){
+        Promise.all(data).then(function(results) {
+          let result = rawEval(results)
+          document.getElementById('results').innerText = result[0].join('\n')
+        })
+      })
+    },
+    processQuotes: async function(lines){
+      //replace each line w/ @quote w/ price
+      return await lines.map(async function(x){
+        if(x.includes('@')){
+          let ticker = x.split('@')[1];
+          let priceObj = await fetch('https://api.iextrading.com/1.0/stock/'+ticker+'/price')
+          let data = await priceObj.json()
+          return x.split('=')[0].trim()+' = '+data
+        }else{
+          return x
+        }
+      });
+      // var promises = lines.map(function(obj){
+      //   if(obj.includes('@')){
+      //     let ticker = obj.split('@')[1];
+      //     return fetch('https://api.iextrading.com/1.0/stock/'+ticker+'/price').then(function(response){
+      //       return response.json().then(function(data){
+      //         return obj.split('=')[0].trim()+' = '+data
+      //       });
+      //     });
+      //   }else{
+      //     return obj
+      //   }
+      // })
+      // console.log(promises)
+      // Promise.all(promises).then(function(results) {
+      //   return results
+      // })
+
     },
     rawEval: function(lines){
       let result = []
@@ -36,26 +79,6 @@ export default {
         result.push( math.eval(e, scope) )
       });
       return [result, scope]
-    },
-    highlight: function(lines, scope){
-      const keys = Object.keys(scope)
-      //look for
-      const result = lines.map(function(line){
-        //check if any keys are in line
-        let tLine = line
-        keys.forEach(function(elm){
-          //if indexOf != -1, wrap it +length in span color
-          if (tLine.indexOf(elm) != -1){
-            let i = tLine.indexOf(elm)
-            let len = elm.lenth
-            //replace
-            tLine = tLine.substring(i, i+len)
-            // tLine = tLine.substring(0, i-1)+tLine.substring(i, i+len)+tLine.substring(i+1+len,-1);
-          }
-        });
-        return tLine
-      });
-      return result
     }
   }
 }
