@@ -46,30 +46,23 @@ export default {
       //replace each line w/ @quote w/ price
       return await lines.map(async function(x){
         if(x.includes('@')){
-          let ticker = x.split('@')[1];
-          let priceObj = await fetch('https://api.iextrading.com/1.0/stock/'+ticker+'/price')
-          let data = await priceObj.json()
-          return x.split('=')[0].trim()+' = '+data
+          let matches = x.match(/[@][a-z]{1,4}/g)
+          let mapped = await matches.map(async function(ticker){
+            let priceObj = await fetch('https://api.iextrading.com/1.0/stock/'+ticker.replace('@', '')+'/price')
+            let data = await priceObj.json()
+            return [ticker, data]
+          });
+          return Promise.all(mapped).then(function(results) {
+            let tString = x
+            results.forEach(function(elm){
+              tString = tString.replace(elm[0], elm[1])
+            })
+            return tString;
+          });
         }else{
           return x
         }
       });
-      // var promises = lines.map(function(obj){
-      //   if(obj.includes('@')){
-      //     let ticker = obj.split('@')[1];
-      //     return fetch('https://api.iextrading.com/1.0/stock/'+ticker+'/price').then(function(response){
-      //       return response.json().then(function(data){
-      //         return obj.split('=')[0].trim()+' = '+data
-      //       });
-      //     });
-      //   }else{
-      //     return obj
-      //   }
-      // })
-      // console.log(promises)
-      // Promise.all(promises).then(function(results) {
-      //   return results
-      // })
 
     },
     rawEval: function(lines){
