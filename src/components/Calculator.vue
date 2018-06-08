@@ -21,6 +21,7 @@ function rawEval(lines){
   return [result, scope]
 }
 
+
 export default {
   name: 'Calculator',
   props: {
@@ -28,7 +29,10 @@ export default {
   },
   mounted: function(){
     this.evaluate()
-    setInterval(this.evaluate(), 2000);
+    var vm = this;
+    this.intervalid1 = setInterval(function(){
+        vm.evaluate()
+    }, 500);
   },
   methods: {
     evaluate: function(){
