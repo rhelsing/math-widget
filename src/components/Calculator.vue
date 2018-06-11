@@ -42,7 +42,7 @@ export default {
       let processedQuotes = this.processQuotes(lines).then(function(data){
         Promise.all(data).then(function(results) {
           let result = rawEval(results)
-          document.getElementById('results').innerText = result[0].join('\n')
+          document.getElementById('results').innerText = result[0].map(x => x.toFixed(2)).join('\n')
         })
       })
     },
